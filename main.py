@@ -4,6 +4,9 @@ from lark import Lark, Transformer
 
 from protoclass import proto, clone
 
+#def proto(**kwargs):
+#    return type('',(object,),kwargs.copy())()
+
 import traceback
 
 
@@ -90,26 +93,53 @@ atom: /[a-zA-Z]+/
 
 def eval_atom(atom, lmap):
     if atom.self == "":
-        return True
+        return False
     if atom.self in lmap:
         data = lmap[atom.self]
-        if data.user:
-            return True
-        elif data.seen:
+        if data.user or data.seen:
             return data.data
         else:
-            data.data = exys_eval(data.rela, lmap)
             data.seen = True
+            data.data = exys_eval(data.rela, lmap)
             return data.data
+            #print("NU:",new_value)
+            #return False
+        #data = lmap[atom.self]
+        #if data.user:
+        #    return True
+        #elif data.seen:
+        #    return data.data
+        #else:
+        #    data.data = exys_eval(data.rela, lmap)
+        #    data.seen = True
+        #    return data.data
     return False
 
 
 def eval_init(expr, lmap):
+
+    def print_rela(rela, pad):
+        print(" " * pad, end="")
+        if rela.kind == 'atom':
+            print(rela.self)
+        elif rela.kind == 'not':
+            print('not')
+            print_rela(rela.rhs, pad+1)
+        elif rela.kind in ['and','or','xor']:
+            print(rela.kind)
+            print_rela(rela.lhs, pad+1)
+            print_rela(rela.rhs, pad+1)
+        else:
+            print("OHNO")
+            print(rela.kind, rela)
+
+    # XXX: issue over here
     for key in lmap:
         val = lmap[key]
         val.data = False
         val.user = False
         val.seen = False
+        lmap[key] = val
     for atom in expr.rhs:
         if atom.self in lmap:
             val = lmap[atom.self]
@@ -119,6 +149,11 @@ def eval_init(expr, lmap):
         else:
             lmap[atom.self] = proto(
                 data=True, user=True, seen=True, rela=proto(kind="atom",self=""))
+
+    print(lmap)
+    for k in lmap:
+        print(k)
+        print_rela(lmap[k].rela,1)
 
 
 
@@ -166,9 +201,7 @@ eval_dict = {
 
 
 def exys_eval(expr, lmap):
-    val = eval_dict[expr.kind](expr, lmap)
-    print(expr.kind, val)
-    return val
+    return eval_dict[expr.kind](expr, lmap)
 
 
 def repl(prompt):
