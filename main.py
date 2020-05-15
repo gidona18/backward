@@ -88,11 +88,6 @@ atom: /[a-zA-Z]+/
     transformer=Exys(),
 )
 
-rela_prot = proto()
-rela_prot.__str__ = lambda self: \
-    f"{self.data}, {self.user}, {self.seen}, {self.rela}"
-
-
 def eval_atom(atom, lmap):
     if atom.self == "":
         return True
@@ -119,10 +114,9 @@ def eval_init(expr, lmap):
             val.data = True
             val.user = True
             val.seen = True
-            print(val.rela)
         else:
             lmap[atom.self] = proto(
-                data=True, user=True, seen=True, rela=proto(kind="atom",self="").chain(rela_prot))
+                data=True, user=True, seen=True, rela=proto(kind="atom",self=""))
 
     for key in lmap:
         print(lmap[key])
@@ -141,7 +135,7 @@ def eval_impl(expr, lmap):
         atom = expr.rhs
         if atom.self in lmap:
             data = lmap[atom.self]
-            data.rela = proto(kind="and", lhs=expr.lhs, rhs=data.rela).chain(rela_prot)
+            data.rela = proto(kind="and", lhs=data.rela, rhs=expr.lhs)
         else:
             lmap[atom.self] = proto(self=False, user=False, seen=False, rela=(expr.lhs))
     else:
