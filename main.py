@@ -1,12 +1,21 @@
 import readline
 
+
+def read(text):
+    # remove comments and split tokens
+    text = text.split('#', 1)[0].split()
+    print(text)
+
+
+
 def repl(prompt):
     try:
         while True:
             text = input(prompt)
-            print(text)
+            tree = read(text)
+            print(tree)
     except KeyboardInterrupt:
-        pass
+        print()
 
 
 
