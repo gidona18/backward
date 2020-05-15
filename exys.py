@@ -2,8 +2,6 @@ import readline
 
 from lark import Lark, Transformer
 
-from protoclass import proto, clone
-
 import traceback
 
 
@@ -20,33 +18,33 @@ class Exys(Transformer):
 
     def stmt_impl(self, expr):
         (lhs, rhs,) = expr
-        return proto(kind="impl", lhs=lhs, rhs=rhs)
+        return ('impl', lhs, rhs)
 
     def stmt_init(self, expr):
-        return proto(kind="init", rhs=expr)
+        return ('init', expr)
 
     def stmt_look(self, expr):
-        return proto(kind="look", rhs=expr)
+        return ('look', expr)
 
     def atom(self, atom):
         (atom,) = atom
-        return proto(kind="atom", self=str(atom))
+        return ('atom', str(atom))
 
     def expr_not(self, expr):
         (rhs,) = expr
-        return proto(kind="not", rhs=rhs)
+        return ('not', rhs)
 
     def expr_and(self, expr):
         (lhs, rhs) = expr
-        return proto(kind="and", lhs=lhs, rhs=rhs)
+        return ('and', lhs, rhs)
 
     def expr_or(self, expr):
         (lhs, rhs) = expr
-        return proto(kind="or", lhs=lhs, rhs=rhs)
+        return ('or', lhs, rhs)
 
     def expr_xor(self, expr):
         (lhs, rhs) = expr
-        return proto(kind="xor", lhs=lhs, rhs=rhs)
+        return ('xor', lhs, rhs)
 
 
 exys = Lark(
@@ -89,36 +87,29 @@ atom: /[a-zA-Z]+/
 )
 
 def eval_atom(atom, lmap):
-    if atom.self == "":
+    if atom[1] == "":
         return True
-    if atom.self in lmap:
-        data = lmap[atom.self]
-        if data.user:
+    if atom[1] in lmap:
+        data = lmap[atom[1]]
+        if data[1]:
             return True
-        elif data.seen:
-            return data.data
+        elif data[2]:
+            return data[0]
         else:
-            data.data = exys_eval(data.rela, lmap)
-            data.seen = True
-            return data.data
+            new_data = exys_eval(data.rela, lmap)
+            lmap[atom[1]] = (new_data, atom[1], True, atom[3])
+            return new_data
     return False
 
 
 def eval_init(expr, lmap):
     for key in lmap:
-        val = lmap[key]
-        val.data = False
-        val.user = False
-        val.seen = False
-    for atom in expr.rhs:
-        if atom.self in lmap:
-            val = lmap[atom.self]
-            val.data = True
-            val.user = True
-            val.seen = True
+        lmap[key] = (False, False, False, lmap[key][3])
+    for atom in expr[2]:
+        if atom[1] in lmap:
+            lmap[atom[1]] = (True, True, True, lmap[atom[1]][3])
         else:
-            lmap[atom.self] = proto(
-                data=True, user=True, seen=True, rela=proto(kind="atom",self=""))
+            lmap[atom[1]] = (True, True, True, ('atom',''))
 
 
 
@@ -131,13 +122,14 @@ def eval_look(expr, lmap):
 
 
 def eval_impl(expr, lmap):
-    if expr.rhs.kind == "atom":
-        atom = expr.rhs
-        if atom.self in lmap:
-            data = lmap[atom.self]
-            data.rela = proto(kind="or", lhs=expr.lhs, rhs=data.rela)
+    if expr[2][0] == "atom":
+        atom = expr[2][0]
+        if atom[1] in lmap:
+            data = lmap[atom[1]]
+            data = data + (('or', expr[1], data[3]))
+            lmap[atom[1]] = data
         else:
-            lmap[atom.self] = proto(data=False, user=False, seen=False, rela=expr.lhs)
+            lmap[atom[1]] = (False, False, False, expr[1])
     else:
         assert(False)
 
@@ -166,9 +158,7 @@ eval_dict = {
 
 
 def exys_eval(expr, lmap):
-    val = eval_dict[expr.kind](expr, lmap)
-    print(expr.kind, val)
-    return val
+    return eval_dict[expr[1]](expr, lmap)
 
 
 def repl(prompt):
