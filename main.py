@@ -2,11 +2,12 @@ import readline
 
 from lark import Lark, Transformer
 
+from protoclass import proto, clone
 
 class Exys(Transformer):
     def atom(self, atom):
         (atom,) = atom
-        return str(atom)
+        return proto(kind='atom', self=str(atom))
 
     def expr(self, expr):
         (expr,) = expr
@@ -19,30 +20,30 @@ class Exys(Transformer):
 
     def stmt_impl(self, expr):
         (lhs,rhs,) = expr
-        return ('impl', lhs, rhs)
+        return proto(kind='impl', lhs=lhs, rhs=rhs)
 
     def stmt_init(self, expr):
-        return ('init', expr)
+        return proto(kind='init', self=expr)
 
     def stmt_look(self, expr):
-        return ('look', expr)
+        return proto(kind='look', self=expr)
 
 
     def expr_not(self, expr):
-        (expr,) = expr
-        return ('not', expr)
+        (rhs,) = expr
+        return proto(kind='not', rhs=rhs)
 
     def expr_and(self, expr):
         (lhs, rhs) = expr
-        return ('and', lhs, rhs)
+        return proto(kind='and', lhs=lhs, rhs=rhs)
 
     def expr_or(self, expr):
         (lhs, rhs) = expr
-        return ('or', lhs, rhs)
+        return proto(kind='or', lhs=lhs, rhs=rhs)
 
     def expr_xor(self, expr):
         (lhs, rhs) = expr
-        return ('xor', lhs, rhs)
+        return proto(kind='xor', lhs=lhs, rhs=rhs)
 
 
 
@@ -84,14 +85,36 @@ atom: /[a-zA-Z]+/
 """, start='stmt_expr', parser='lalr', transformer=Exys())
 
 
+def eval_atom(atom, lmap):
+    return False
+
+def eval_init(expr, lmap):
+    return False
+
+def eval_look(expr, lmap):
+    return False
+
+
+
+eval_dict = {
+    'atom': eval_atom,
+    'init': eval_init,
+    'look': eval_look,
+}
+
+def exys_eval(expr, lmap):
+    return eval_dict[expr.kind](expr, lmap)
+
 
 def repl(prompt):
+    lmap = {}
     try:
         while True:
             text = input(prompt)
             try:
                 tree = exys.parse(text)
-                print(tree)
+                text = exys_eval(tree, lmap)
+                print(text)
             except Exception as e:
                 print(f"{type(e)}:", e)
     except KeyboardInterrupt:
