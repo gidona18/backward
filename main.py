@@ -12,14 +12,21 @@ class Exys(Transformer):
         (expr,) = expr
         return expr
 
+    def stmt(self, stmt):
+        (stmt,) = stmt
+        return stmt
+
+
+    def expr_impl(self, expr):
+        (lhs,rhs,) = expr
+        return ('impl', lhs, rhs)
+
+
     def expr_not(self, expr):
         (expr,) = expr
         return ('not', expr)
 
-    def expr_impl(self, expr):
-        (lhs,rhs,) = expr
-        print(expr)
-        return ('impl', lhs, rhs)
+
 
 
 
@@ -28,13 +35,17 @@ exys = Lark(r"""
 %import common.WS
 %ignore WS
 
+stmt_expr: stmt | expr
+
+stmt: stmt_impl -> stmt
+
+stmt_impl: ( expr_head "=>" expr_head ) -> stmt_impl
+
+
 expr_head: expr_not -> expr
 
-expr_not: expr_impl -> expr
-    | ( "!" expr_not ) -> expr_not
-
-expr_impl: expr_last -> expr
-    | ( expr_impl "=>" expr_last ) -> expr_impl
+expr_not: expr_last -> expr
+    | ( "!" expr_last ) -> expr_last
 
 expr_last: atom -> expr
     | ( "(" expr_head ")" ) -> expr
@@ -42,7 +53,7 @@ expr_last: atom -> expr
 
 atom: /[a-zA-Z]+/
 
-""", start='expr_head', parser='lalr', transformer=Exys())
+""", start='stmt_expr', parser='lalr', transformer=Exys())
 
 
 
