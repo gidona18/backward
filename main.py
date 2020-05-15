@@ -31,7 +31,7 @@ exys = Lark(r"""
 expr_head: expr_not -> expr
 
 expr_not: expr_impl -> expr
-    | ( "!" expr_impl ) -> expr_not
+    | ( "!" expr_not ) -> expr_not
 
 expr_impl: expr_last -> expr
     | ( expr_impl "=>" expr_last ) -> expr_impl
