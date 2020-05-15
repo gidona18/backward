@@ -8,9 +8,7 @@ import traceback
 
 
 class Exys(Transformer):
-    def atom(self, atom):
-        (atom,) = atom
-        return proto(kind="atom", self=str(atom))
+
 
     def expr(self, expr):
         (expr,) = expr
@@ -29,6 +27,10 @@ class Exys(Transformer):
 
     def stmt_look(self, expr):
         return proto(kind="look", rhs=expr)
+
+    def atom(self, atom):
+        (atom,) = atom
+        return proto(kind="atom", self=str(atom))
 
     def expr_not(self, expr):
         (rhs,) = expr
@@ -86,25 +88,44 @@ atom: /[a-zA-Z]+/
     transformer=Exys(),
 )
 
+rela_prot = proto()
+rela_prot.__str__ = lambda self: \
+    f"{self.data}, {self.user}, {self.seen}, {self.rela}"
+
 
 def eval_atom(atom, lmap):
+    if atom.self == "":
+        return True
     if atom.self in lmap:
         data = lmap[atom.self]
         if data.seen:
-            return data.self
+            return data.data
         else:
-            data.self = exys_eval(data.rela, lmap)
+            data.data = exys_eval(data.rela, lmap)
             data.seen = True
-            return data.self
+            return data.data
     return False
 
 
 def eval_init(expr, lmap):
-    # TODO: reset previous facts
+    for key in lmap:
+        val = lmap[key]
+        val.data = False
+        val.user = False
+        val.seen = False
     for atom in expr.rhs:
-        lmap[atom.self] = proto(
-            self=True, user=True, seen=True, rela=proto(kind="none")
-        )
+        if atom.self in lmap:
+            val = lmap[atom.self]
+            val.data = True
+            val.user = True
+            val.seen = True
+            print(val.rela)
+        else:
+            lmap[atom.self] = proto(
+                data=True, user=True, seen=True, rela=proto(kind="atom",self="").chain(rela_prot))
+
+    for key in lmap:
+        print(lmap[key])
 
 
 def eval_look(expr, lmap):
@@ -120,29 +141,30 @@ def eval_impl(expr, lmap):
         atom = expr.rhs
         if atom.self in lmap:
             data = lmap[atom.self]
-            data.rela = proto(kind="and", lhs=expr.lhs, rhs=data.rela)
+            data.rela = proto(kind="and", lhs=expr.lhs, rhs=data.rela).chain(rela_prot)
         else:
             lmap[atom.self] = proto(self=False, user=False, seen=False, rela=(expr.lhs))
     else:
         assert(False)
 
+def eval_not(expr, lmap):
+    return not exys_eval(expr, lmap)
+
 def eval_and(expr, lmap):
     return exys_eval(expr.lhs, lmap) and exys_eval(expr.rhs, lmap)
-
 
 def eval_or(expr, lmap):
     return exys_eval(expr.lhs, lmap) or exys_eval(expr.rhs, lmap)
 
 def eval_xor(expr, lmap):
-    lhs = exys_eval(expr.lhs, lmap)
-    rhs = exys_eval(expr.rhs, lmap)
-    return (lhs and (not rhs)) or ((not lhs) and rhs)
+    return exys_eval(expr.lhs, lmap) != exys_eval(expr.rhs, lmap)
 
 eval_dict = {
     "atom": eval_atom,
     "init": eval_init,
     "look": eval_look,
     "impl": eval_impl,
+    "not": eval_not,
     "and": eval_and,
     "or": eval_or,
     "xor": eval_xor,
