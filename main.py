@@ -45,8 +45,11 @@ stmt_impl: ( expr_head "=>" expr_head ) -> stmt_impl
 
 expr_head: expr_not -> expr
 
-expr_not: expr_last -> expr
-    | ( "!" expr_last ) -> expr_not
+expr_not: expr_and -> expr
+    | ( "!" expr_and ) -> expr_not
+
+expr_and: expr_last -> expr
+    | ( expr_and "&" expr_last ) -> expr_and
 
 expr_last: atom -> expr
     | ( "(" expr_head ")" ) -> expr
