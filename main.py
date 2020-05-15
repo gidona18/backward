@@ -21,6 +21,12 @@ class Exys(Transformer):
         (lhs,rhs,) = expr
         return ('impl', lhs, rhs)
 
+    def stmt_init(self, expr):
+        return ('init', expr)
+
+    def stmt_look(self, expr):
+        return ('look', expr)
+
 
     def expr_not(self, expr):
         (expr,) = expr
@@ -51,9 +57,9 @@ exys = Lark(r"""
 stmt_expr: stmt_head -> stmt
     | expr_head -> expr
 
-stmt_head: stmt_impl -> stmt
-
-stmt_impl: ( expr_head "=>" expr_head ) -> stmt_impl
+stmt_head: ( expr_head "=>" expr_head ) -> stmt_impl
+    | ( "=" atom* ) -> stmt_init
+    | ( "?" atom* ) -> stmt_look
 
 
 expr_head: expr_and -> expr
