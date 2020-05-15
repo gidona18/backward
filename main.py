@@ -26,6 +26,10 @@ class Exys(Transformer):
         (expr,) = expr
         return ('not', expr)
 
+    def expr_and(self, expr):
+        (lhs, rhs) = expr
+        return ('and', lhs, rhs)
+
 
 
 
@@ -46,7 +50,7 @@ stmt_impl: ( expr_head "=>" expr_head ) -> stmt_impl
 expr_head: expr_not -> expr
 
 expr_not: expr_and -> expr
-    | ( "!" expr_and ) -> expr_not
+    | ( "!" expr_not ) -> expr_not
 
 expr_and: expr_last -> expr
     | ( expr_and "&" expr_last ) -> expr_and
