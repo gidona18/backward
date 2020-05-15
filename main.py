@@ -177,7 +177,7 @@ def eval_impl(expr, lmap):
         assert(False)
 
 def eval_not(expr, lmap):
-    return not exys_eval(expr, lmap)
+    return not exys_eval(expr.rhs, lmap)
 
 def eval_and(expr, lmap):
     return exys_eval(expr.lhs, lmap) and exys_eval(expr.rhs, lmap)
