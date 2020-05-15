@@ -23,10 +23,10 @@ class Exys(Transformer):
         return proto(kind='impl', lhs=lhs, rhs=rhs)
 
     def stmt_init(self, expr):
-        return proto(kind='init', self=expr)
+        return proto(kind='init', rhs=expr)
 
     def stmt_look(self, expr):
-        return proto(kind='look', self=expr)
+        return proto(kind='look', rhs=expr)
 
 
     def expr_not(self, expr):
@@ -86,13 +86,28 @@ atom: /[a-zA-Z]+/
 
 
 def eval_atom(atom, lmap):
-    return False
+    if atom.self in lmap:
+        data = lmap[atom.self]
+        if data.seen:
+            return data.self
+        else:
+            # TODO
+            return False
+    else:
+        return False
 
 def eval_init(expr, lmap):
-    return False
+    for atom in expr.rhs:
+        lmap[atom.self] = proto(self=True, user=True, seen=True)
+
 
 def eval_look(expr, lmap):
-    return False
+    buf = []
+    for atom in expr.rhs:
+        txt = f"    {atom.self} -> {eval_atom(atom, lmap)}"
+        buf.append(txt)
+    return "\n".join(buf)
+
 
 
 
@@ -114,9 +129,11 @@ def repl(prompt):
             try:
                 tree = exys.parse(text)
                 text = exys_eval(tree, lmap)
-                print(text)
+                if text:
+                    print(text)
             except Exception as e:
-                print(f"{type(e)}:", e)
+                pass
+                #print(f"{type(e)}:", e)
     except KeyboardInterrupt:
         print()
 
