@@ -4,6 +4,8 @@ from lark import Lark, Transformer
 
 from protoclass import proto, clone
 
+import traceback
+
 
 class Exys(Transformer):
     def atom(self, atom):
@@ -98,11 +100,11 @@ def eval_atom(atom, lmap):
 
 
 def eval_init(expr, lmap):
+    # TODO: reset previous facts
     for atom in expr.rhs:
         lmap[atom.self] = proto(
             self=True, user=True, seen=True, rela=proto(kind="none")
         )
-    return True
 
 
 def eval_look(expr, lmap):
@@ -121,15 +123,29 @@ def eval_impl(expr, lmap):
             data.rela = proto(kind="and", lhs=expr.lhs, rhs=data.rela)
         else:
             lmap[atom.self] = proto(self=False, user=False, seen=False, rela=(expr.lhs))
+    else:
+        assert(False)
 
-    assert False
+def eval_and(expr, lmap):
+    return exys_eval(expr.lhs, lmap) and exys_eval(expr.rhs, lmap)
 
+
+def eval_or(expr, lmap):
+    return exys_eval(expr.lhs, lmap) or exys_eval(expr.rhs, lmap)
+
+def eval_xor(expr, lmap):
+    lhs = exys_eval(expr.lhs, lmap)
+    rhs = exys_eval(expr.rhs, lmap)
+    return (lhs and (not rhs)) or ((not lhs) and rhs)
 
 eval_dict = {
     "atom": eval_atom,
     "init": eval_init,
     "look": eval_look,
     "impl": eval_impl,
+    "and": eval_and,
+    "or": eval_or,
+    "xor": eval_xor,
 }
 
 
@@ -147,8 +163,7 @@ def repl(prompt):
                 text = exys_eval(tree, lmap)
                 print(text)
             except Exception as e:
-                pass
-                # print(f"{type(e)}:", e)
+                print(traceback.format_exc())
     except KeyboardInterrupt:
         print()
 
