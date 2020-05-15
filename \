@@ -4,11 +4,10 @@ from lark import Lark, Transformer
 
 from protoclass import proto, clone
 
-
 class Exys(Transformer):
     def atom(self, atom):
         (atom,) = atom
-        return proto(kind="atom", self=str(atom))
+        return proto(kind='atom', self=str(atom))
 
     def expr(self, expr):
         (expr,) = expr
@@ -18,35 +17,40 @@ class Exys(Transformer):
         (stmt,) = stmt
         return stmt
 
+
     def stmt_impl(self, expr):
-        (lhs, rhs,) = expr
-        return proto(kind="impl", lhs=lhs, rhs=rhs)
+        (lhs,rhs,) = expr
+        return proto(kind='impl', lhs=lhs, rhs=rhs)
 
     def stmt_init(self, expr):
-        return proto(kind="init", rhs=expr)
+        return proto(kind='init', rhs=expr)
 
     def stmt_look(self, expr):
-        return proto(kind="look", rhs=expr)
+        return proto(kind='look', rhs=expr)
+
 
     def expr_not(self, expr):
         (rhs,) = expr
-        return proto(kind="not", rhs=rhs)
+        return proto(kind='not', rhs=rhs)
 
     def expr_and(self, expr):
         (lhs, rhs) = expr
-        return proto(kind="and", lhs=lhs, rhs=rhs)
+        return proto(kind='and', lhs=lhs, rhs=rhs)
 
     def expr_or(self, expr):
         (lhs, rhs) = expr
-        return proto(kind="or", lhs=lhs, rhs=rhs)
+        return proto(kind='or', lhs=lhs, rhs=rhs)
 
     def expr_xor(self, expr):
         (lhs, rhs) = expr
-        return proto(kind="xor", lhs=lhs, rhs=rhs)
+        return proto(kind='xor', lhs=lhs, rhs=rhs)
 
 
-exys = Lark(
-    r"""
+
+
+
+
+exys = Lark(r"""
 
 %import common.WS
 %ignore WS
@@ -78,31 +82,24 @@ expr_last: atom -> expr
 
 atom: /[a-zA-Z]+/
 
-""",
-    start="stmt_expr",
-    parser="lalr",
-    transformer=Exys(),
-)
+""", start='stmt_expr', parser='lalr', transformer=Exys())
 
 
 def eval_atom(atom, lmap):
+    print("HERE")
     if atom.self in lmap:
         data = lmap[atom.self]
         if data.seen:
             return data.self
         else:
-            data.self = exys_eval(data.rela, lmap)
-            data.seen = True
-            return data.self
-    return False
-
+            # TODO
+            return False
+    else:
+        return False
 
 def eval_init(expr, lmap):
     for atom in expr.rhs:
-        lmap[atom.self] = proto(
-            self=True, user=True, seen=True, rela=proto(kind="none")
-        )
-    return True
+        lmap[atom.self] = proto(self=True, user=True, seen=True, rela=())
 
 
 def eval_look(expr, lmap):
@@ -114,24 +111,25 @@ def eval_look(expr, lmap):
 
 
 def eval_impl(expr, lmap):
-    if expr.rhs.kind == "atom":
+    if expr.rhs.kind == 'atom':
         atom = expr.rhs
         if atom.self in lmap:
             data = lmap[atom.self]
-            data.rela = proto(kind="and", lhs=expr.lhs, rhs=data.rela)
+            data.rela = proto(kind='and', lhs=expr.lhs, rhs=data.rela)
         else:
-            lmap[atom.self] = proto(self=False, user=False, seen=False, rela=(expr.lhs))
+            lmap[atom.self] = proto(self=False, user=False, seen=False,
+                rela=(expr.lhs))
 
-    assert False
+    assert(False)
+        
 
 
 eval_dict = {
-    "atom": eval_atom,
-    "init": eval_init,
-    "look": eval_look,
-    "impl": eval_impl,
+    'atom': eval_atom,
+    'init': eval_init,
+    'look': eval_look,
+    'impl': eval_impl,
 }
-
 
 def exys_eval(expr, lmap):
     return eval_dict[expr.kind](expr, lmap)
@@ -145,17 +143,20 @@ def repl(prompt):
             try:
                 tree = exys.parse(text)
                 text = exys_eval(tree, lmap)
-                print(text)
+                if text:
+                    print(text)
             except Exception as e:
                 pass
-                # print(f"{type(e)}:", e)
+                #print(f"{type(e)}:", e)
     except KeyboardInterrupt:
         print()
+
 
 
 def main():
     repl("λ ")
 
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
