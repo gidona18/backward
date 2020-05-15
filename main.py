@@ -30,6 +30,15 @@ class Exys(Transformer):
         (lhs, rhs) = expr
         return ('and', lhs, rhs)
 
+    def expr_or(self, expr):
+        (lhs, rhs) = expr
+        return ('or', lhs, rhs)
+
+    def expr_xor(self, expr):
+        (lhs, rhs) = expr
+        return ('xor', lhs, rhs)
+
+
 
 
 
@@ -49,11 +58,14 @@ stmt_impl: ( expr_head "=>" expr_head ) -> stmt_impl
 
 expr_head: expr_and -> expr
 
-//expr_not: expr_and -> expr
-//    | ( "!" expr_and ) -> expr_not
+expr_and: expr_or -> expr
+    | ( expr_and "&" expr_or ) -> expr_and
 
-expr_and: expr_last -> expr
-    | ( expr_and "&" expr_last ) -> expr_and
+expr_or: expr_xor -> expr
+    | ( expr_or "|" expr_xor ) -> expr_or
+
+expr_xor: expr_last -> expr
+    | ( expr_xor "^" expr_last ) -> expr_xor
 
 expr_last: atom -> expr
     | ( "!" atom ) -> expr_not
