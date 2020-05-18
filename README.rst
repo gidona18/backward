@@ -18,9 +18,9 @@ Usage
    >>> from backward import Backward
    
    >>> ctx = Backward()
-   >>> ctx.evaluate("a => b")
-   >>> ctx.evaluate("b => c")
-   >>> ctx.evaluate("= a")  # a is true
+   >>> _ = ctx.evaluate("a => b")
+   >>> _ = ctx.evaluate("b => c")
+   >>> _ = ctx.evaluate("= a")  # a is true
    >>> ctx.evaluate("a b c")  # are b and c true?
    [True, True, True]
 
