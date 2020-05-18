@@ -35,6 +35,30 @@ class TestRead(unittest.TestCase):
         self.assertEqual(ans, [False])
         ans = ctx.evaluate("!b")
         self.assertEqual(ans, [True])
+    
+    def test_and(self):
+        ctx = Backward()
+        ans = ctx.evaluate("= a b c")
+        ans = ctx.evaluate("a & b & c")
+        self.assertEqual(ans, [True])
+        ans = ctx.evaluate("a & !b & c")
+        self.assertEqual(ans, [False])
+        ans = ctx.evaluate("a & !(!b & !c)")
+        self.assertEqual(ans, [True])
+    
+    def test_or(self):
+        ctx = Backward()
+        ans = ctx.evaluate("= a c")
+        ans = ctx.evaluate("!a | c")
+        self.assertEqual(ans, [True])
+        ans = ctx.evaluate("a | !c")
+        self.assertEqual(ans, [True])
+        ans = ctx.evaluate("b | c")
+        self.assertEqual(ans, [True])
+        ans = ctx.evaluate("!a | !c")
+        self.assertEqual(ans, [False])
+    
+
 
 
 if __name__ == "__main__":

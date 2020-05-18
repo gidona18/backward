@@ -27,6 +27,14 @@ def eval_atom(ctx, atom):
 def eval_not(ctx, arg):
     return not eval_node(ctx, arg.data)
 
+def eval_and(ctx, arg):
+    return eval_node(ctx, arg.data[0]) and eval_node(ctx, arg.data[1])
+
+def eval_or(ctx, arg):
+    return eval_node(ctx, arg.data[0]) or eval_node(ctx, arg.data[1])
+
+def eval_xor(ctx, arg):
+    return eval_node(ctx, arg.data[0]) != eval_node(ctx, arg.data[1])
 
 NODE_DICT = {
     # stmt
@@ -34,10 +42,12 @@ NODE_DICT = {
     # expr
     'atom': eval_atom,
     'not': eval_not,
+    'and': eval_and,
+    'or': eval_or,
+    'xor': eval_xor,
 }
 
 def eval_node(ctx, node):
-    #print(node)
     return NODE_DICT[node.kind](ctx, node)
 
 
