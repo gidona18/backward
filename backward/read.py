@@ -21,7 +21,16 @@ class XSys(Transformer):
         return proto(kind='atom', data=atom).chain(BASE)
     
     def make_true(self, args):
+        args = args[:]
         return proto(kind='make_true', data=args).chain(BASE)
+    
+    def find_true(self, args):
+        args = args[:]
+        return proto(kind='find_true', data=args).chain(BASE)
+    
+    def make_rule(self, args):
+        (lhs, rhs) = args
+        return proto(kind='make_rule', data=(lhs, rhs)).chain(BASE)
 
 XSYS_GRAMMAR = Lark(r"""
 
