@@ -122,6 +122,25 @@ class TestRead(unittest.TestCase):
         ctx.evaluate("A | !A => C")
         ans = ctx.evaluate("B C")
         self.assertEqual(ans, [True, True])
+    
+    def test_rule_or(self):
+        ctx = Backward()
+        ctx.evaluate("""
+            B & C => A
+            D | E => B
+            B => C
+        """)
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [False])
+        ctx.evaluate("= D")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= E")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= D E")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
 
 if __name__ == "__main__":
     unittest.main()
