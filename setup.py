@@ -25,6 +25,9 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
+    entry_points = {
+        "console_scripts": ["main=backward.__main__:main"],
+    },
     zip_safe=True,
     author="Armando Herrera",
     author_email="mail@jellowfish.com",

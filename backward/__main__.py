@@ -1,10 +1,10 @@
 import click
 import readline
 
-from . import Interpreter
+from .backward import Interpreter
 
 @click.command()
-@click.argument('file', default=None)
+@click.option('--file', default=None)
 def main(file):
     interpreter = Interpreter()
     if file:
