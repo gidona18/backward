@@ -80,6 +80,41 @@ class TestRead(unittest.TestCase):
         ans = ctx.evaluate("a => d & e & f")
         ans = ctx.evaluate("d e f")
         self.assertEqual(ans, [True,True,True])
+    
+    def test_rule_and(self):
+        ctx = Backward()
+        ans = ctx.evaluate("""
+            B => A
+            D & E => B
+            G & H => F
+            I & J => G
+            G => H
+            L & M => K
+            O & P => L & N
+            N => M
+        """)
+        ans = ctx.evaluate("= D E I J O P")
+        ans = ctx.evaluate("A F K P")
+        self.assertEqual(ans, [True, True, True, True])
+        ans = ctx.evaluate("= D E I J P")
+        ans = ctx.evaluate("A F K P")
+        self.assertEqual(ans, [True, True, False, True])
+    
+    def test_rule_not(self):
+        ctx = Backward()
+        ctx.evaluate("B & !C => A")
+        ctx.evaluate("=")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [False])
+        ctx.evaluate("= B")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= C")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [False])
+        ctx.evaluate("= B C")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [False])
 
 if __name__ == "__main__":
     unittest.main()

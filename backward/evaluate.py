@@ -12,7 +12,6 @@ def make_fact(ctx, args):
             val.seen = True
         else:
             ctx[arg.data] = proto(data=True,seen=True,rule=None)
-    return ()
 
 def init_rule(ctx, lhs, rhs):
     # only and supported on right handside
