@@ -1,5 +1,5 @@
-from .backward import Interpreter
+from .backward import Backward
 
 __version__ = "0.0.1"
 
-Interpreter = Interpreter
+Backward = Backward

@@ -1,3 +1,4 @@
+"""
 import click
 import readline
 
@@ -28,3 +29,4 @@ def main(file):
 
 if __name__ == "__main__":
     main()
+"""
