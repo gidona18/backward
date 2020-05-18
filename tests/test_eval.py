@@ -162,5 +162,38 @@ class TestRead(unittest.TestCase):
         ans = ctx.evaluate("A")
         self.assertEqual(ans, [False])
 
+    def test_rule_notself(self):
+        ctx = Backward()
+        ctx.evaluate("""
+            !A => A
+        """)
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+
+    def test_rule_cont(self):
+        ctx = Backward()
+        ctx.evaluate("""
+            A => A
+            !A => A
+        """)
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+    
+    def test_rule_samerule(self):
+        ctx = Backward()
+        ctx.evaluate("""
+            B => A
+            C => A
+        """)
+        ctx.evaluate("= B")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= C")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= B C")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+
 if __name__ == "__main__":
     unittest.main()
