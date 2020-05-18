@@ -1,4 +1,4 @@
-from .backward import Interpreter
+from . import Interpreter
 
 __version__ = "0.0.1"
 

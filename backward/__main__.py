@@ -1,21 +1,30 @@
+import click
 import readline
 
-from .backward import Interpreter
+from . import Interpreter
 
-from . import __version__
-
-def main():
-    # initialize interpreter
+@click.command()
+@click.argument('file', default=None)
+def main(file):
     interpreter = Interpreter()
-    # start repl
-    print(f"Backward v{__version__}")
-    while True:
-        txt = input("$ ")
+    if file:
         try:
-            ans = interpreter.interpret(txt)
-            print(ans)
+            with open(file, 'r') as f:
+                txt = f.read()
+                ans = interpreter.interpret(txt)
+                print(ans)
         except Exception as e:
             print(f"{type(e)}:", e)
+    else:
+        while True:
+            txt = input("λ ")
+            try:
+                ans = interpreter.interpret(txt)
+                print(ans)
+            except Exception as e:
+                print(f"{type(e)}:", e)
+
+
 
 
 if __name__ == "__main__":
