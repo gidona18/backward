@@ -34,6 +34,18 @@ class XSys(Transformer):
     
     def expr_not(self, arg):
         return proto(kind='not', data=arg[0]).chain(BASE)
+    
+    def expr_and(self, args):
+        (lhs, rhs) = args
+        return proto(kind='and', data=(lhs, rhs)).chain(BASE)
+    
+    def expr_or(self, args):
+        (lhs, rhs) = args
+        return proto(kind='or', data=(lhs, rhs)).chain(BASE)
+    
+    def expr_xor(self, args):
+        (lhs, rhs) = args
+        return proto(kind='xor', data=(lhs, rhs)).chain(BASE)
 
 XSYS_GRAMMAR = Lark(r"""
 
