@@ -3,13 +3,14 @@ import readline
 
 from .backward import Interpreter
 
+
 @click.command()
-@click.option('--file', default=None)
+@click.option("--file", default=None)
 def main(file):
     interpreter = Interpreter()
     if file:
         try:
-            with open(file, 'r') as f:
+            with open(file, "r") as f:
                 txt = f.read()
                 ans = interpreter.interpret(txt)
                 print(ans)

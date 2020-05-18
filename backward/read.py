@@ -4,6 +4,7 @@ from protoclass import proto
 
 BASE = proto(__repr__=lambda self: f"{self.kind}({self.data})")
 
+
 class XSys(Transformer):
     def start(self, args):
         return args[:]
@@ -11,44 +12,45 @@ class XSys(Transformer):
     def stmt(self, stmt):
         (stmt,) = stmt
         return stmt
-    
+
     def expr(self, expr):
         (expr,) = expr
         return expr
 
     def atom(self, atom):
         atom = str(atom[0])
-        return proto(kind='atom', data=atom).chain(BASE)
-    
+        return proto(kind="atom", data=atom).chain(BASE)
+
     def make_true(self, args):
         args = args[:]
-        return proto(kind='make_true', data=args).chain(BASE)
-    
+        return proto(kind="make_true", data=args).chain(BASE)
+
     def find_true(self, args):
         args = args[:]
-        return proto(kind='find_true', data=args).chain(BASE)
-    
+        return proto(kind="find_true", data=args).chain(BASE)
+
     def make_rule(self, args):
         (lhs, rhs) = args
-        return proto(kind='make_rule', data=(lhs, rhs)).chain(BASE)
-    
+        return proto(kind="make_rule", data=(lhs, rhs)).chain(BASE)
+
     def expr_not(self, arg):
-        return proto(kind='not', data=arg[0]).chain(BASE)
-    
+        return proto(kind="not", data=arg[0]).chain(BASE)
+
     def expr_and(self, args):
         (lhs, rhs) = args
-        return proto(kind='and', data=(lhs, rhs)).chain(BASE)
-    
+        return proto(kind="and", data=(lhs, rhs)).chain(BASE)
+
     def expr_or(self, args):
         (lhs, rhs) = args
-        return proto(kind='or', data=(lhs, rhs)).chain(BASE)
-    
+        return proto(kind="or", data=(lhs, rhs)).chain(BASE)
+
     def expr_xor(self, args):
         (lhs, rhs) = args
-        return proto(kind='xor', data=(lhs, rhs)).chain(BASE)
+        return proto(kind="xor", data=(lhs, rhs)).chain(BASE)
 
 
-XSYS_GRAMMAR = Lark(r"""
+XSYS_GRAMMAR = Lark(
+    r"""
 
     %import common.WS
     %ignore WS
@@ -80,7 +82,10 @@ XSYS_GRAMMAR = Lark(r"""
         | ( "!" "(" expr_head ")" ) -> expr_not
         | ( "(" expr_head ")" )
 
-""", parser="lalr", transformer=XSys())
+""",
+    parser="lalr",
+    transformer=XSys(),
+)
 
 
 def read(text):
