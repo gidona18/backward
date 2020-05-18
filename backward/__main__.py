@@ -2,6 +2,7 @@ import sys
 import readline
 from .backward import Backward
 
+
 def main(file):
     ctx = Backward()
     if file:
@@ -18,11 +19,10 @@ def main(file):
             try:
                 ans = ctx.evaluate(input("λ "))
                 if ans != [] and ans != [None]:
-                        print(ans)
+                    print(ans)
             except Exception as e:
                 print(f"{type(e)}:", e)
 
 
 if __name__ == "__main__":
     main(sys.argv[1] if len(sys.argv) > 1 else None)
-
