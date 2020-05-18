@@ -1,6 +1,6 @@
 from protoclass import proto
 
-def make_true(ctx, args):
+def make_fact(ctx, args):
     for key in ctx:
         val = ctx[key]
         val.true = False
@@ -11,18 +11,14 @@ def make_true(ctx, args):
             val.true = True
             val.seen = True
         else:
-            ctx[arg.data] = proto(true=True,seen=True,rela=None)
+            ctx[arg.data] = proto(data=True,seen=True,rela=None)
     return ()
-
-
-def find_true(ctx, find):
-    return [eval_atom(ctx, arg) for arg in find.data]
 
 
 def eval_atom(ctx, atom):
     if atom.data in ctx:
-        data = ctx[atom.data]
-        return data.true
+        val = ctx[atom.data]
+        return val.data
         # XXX: implement chaining
     else:
         return False
@@ -30,8 +26,7 @@ def eval_atom(ctx, atom):
 
 NODE_DICT = {
     # stmt
-    'make_true': make_true,
-    'find_true': find_true,
+    'make_fact': make_fact,
     # expr
     'atom': eval_atom,
 }

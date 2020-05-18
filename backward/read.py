@@ -21,13 +21,9 @@ class XSys(Transformer):
         atom = str(atom[0])
         return proto(kind="atom", data=atom).chain(BASE)
 
-    def make_true(self, args):
+    def make_fact(self, args):
         args = args[:]
-        return proto(kind="make_true", data=args).chain(BASE)
-
-    def find_true(self, args):
-        args = args[:]
-        return proto(kind="find_true", data=args).chain(BASE)
+        return proto(kind="make_fact", data=args).chain(BASE)
 
     def make_rule(self, args):
         (lhs, rhs) = args
@@ -58,8 +54,7 @@ XSYS_GRAMMAR = Lark(
 
     start: stmt* | expr*
 
-    stmt: ( "=" atom* ) -> make_true
-        | ( "?" atom* ) -> find_true
+    stmt: ( "=" atom* ) -> make_fact
         | ( expr "=>" expr ) -> make_rule
     
     atom: CNAME
