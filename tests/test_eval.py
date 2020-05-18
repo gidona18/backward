@@ -141,6 +141,26 @@ class TestRead(unittest.TestCase):
         ctx.evaluate("= D E")
         ans = ctx.evaluate("A")
         self.assertEqual(ans, [True])
+    
+    def test_rule_xor(self):
+        ctx = Backward()
+        ctx.evaluate("""
+            B & C => A
+            D ^ E => B
+            B => C
+        """)
+        ctx.evaluate("=")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [False])
+        ctx.evaluate("= D")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= E")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [True])
+        ctx.evaluate("= D E")
+        ans = ctx.evaluate("A")
+        self.assertEqual(ans, [False])
 
 if __name__ == "__main__":
     unittest.main()
