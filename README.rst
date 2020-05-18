@@ -15,7 +15,6 @@ Usage
 
 .. code:: python
 
-
    >>> from backward import Backward
    
    >>> ctx = Backward()
@@ -26,6 +25,22 @@ Usage
    [True, True, True]
 
 You can also call ``python -m backward`` from your shell to enter an interactive REPL.
+
+Syntax
+------
+
+::
+
+   C => E          # C implies E
+   A & B & C => D  # A and B and C implies D
+   A | B => C      # A or B implies C
+   A & !B => F     # A and not B implies F
+   C | !G => H     # C or not G implies H
+   V ^ W => X      # V xor W implies X
+   A & B => Y & Z  # A and B implies Y and Z
+
+   = A B G         # Initial facts : A, B and G are true. All others are false.
+   G V X           # What are G, V and X ?
 
 Contributing
 ------------
