@@ -17,6 +17,10 @@ class XSys(Transformer):
         (expr,) = expr
         return expr
 
+    def expr_last(self, expr):
+        (expr,) = expr
+        return expr
+
     def atom(self, atom):
         atom = str(atom[0])
         return proto(kind="atom", data=atom).chain(BASE)
@@ -71,10 +75,9 @@ XSYS_GRAMMAR = Lark(
     
     expr_xor: expr_last -> expr
         | ( expr_xor "^" expr_last ) -> expr_xor
-    
-    expr_last: atom -> expr
-        | ( "!" atom ) -> expr_not
-        | ( "!" "(" expr_head ")" ) -> expr_not
+
+    expr_last: ("!" expr_last ) -> expr_not 
+        | atom -> expr
         | ( "(" expr_head ")" )
 
 """,
