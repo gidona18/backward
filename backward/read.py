@@ -31,6 +31,9 @@ class XSys(Transformer):
     def make_rule(self, args):
         (lhs, rhs) = args
         return proto(kind='make_rule', data=(lhs, rhs)).chain(BASE)
+    
+    def expr_not(self, arg):
+        return proto(kind='not', data=arg[0]).chain(BASE)
 
 XSYS_GRAMMAR = Lark(r"""
 
