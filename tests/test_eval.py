@@ -69,7 +69,16 @@ class TestRead(unittest.TestCase):
         self.assertEqual(ans, [True])
         ans = ctx.evaluate("a ^ b")
         self.assertEqual(ans, [True])
-
+    
+    def test_rule(self):
+        ctx = Backward()
+        ans = ctx.evaluate("a => b")
+        ans = ctx.evaluate("b => c")
+        ans = ctx.evaluate("= a")
+        ans = ctx.evaluate("a b c")
+        #self.assertEqual(ans, [True,True,True])
+        ans = ctx.evaluate("a => d & e & f")
+        self.assertTrue(False)
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,9 +11,29 @@ def make_fact(ctx, args):
             val.data = True
             val.seen = True
         else:
-            ctx[arg.data] = proto(data=True,seen=True,rela=None)
+            ctx[arg.data] = proto(data=True,seen=True,rule=None)
     return ()
 
+def init_rule(ctx, lhs, rhs):
+    # only and supported on right handside
+    if rhs.kind == 'atom':
+        atom = rhs
+        if atom.data in ctx:
+            val = ctx[atom.data]
+            if val.rule == None:
+                val.rule = lhs
+            else:
+                val.rule = proto(kind='or', data=(lhs, val.rule))
+        else:
+            ctx[atom.data] = proto(data=False,seen=False,rule=lhs)
+    elif rhs.kind == 'and':
+        init_rule(ctx, lhs, rhs.data[0])
+        init_rule(ctx, lhs, rhs.data[1])
+    else:
+        assert(False)
+
+def make_rule(ctx, args):
+    init_rule(ctx, args.data[0], args.data[1])
 
 def eval_atom(ctx, atom):
     if atom.data in ctx:
@@ -39,6 +59,7 @@ def eval_xor(ctx, arg):
 NODE_DICT = {
     # stmt
     'make_fact': make_fact,
+    'make_rule': make_rule,
     # expr
     'atom': eval_atom,
     'not': eval_not,
