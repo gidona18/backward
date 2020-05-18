@@ -1,0 +1,16 @@
+# rules
+B => A
+D & E => B
+G & H => F
+I & J => G
+G => H
+L & M => K
+O & P => L & N
+N => M
+
+# facts
+= D E I J O P
+A F K P  # AFKP = true
+= D E I J P
+A F K P  # AFP = true, K = false
+

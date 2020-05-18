@@ -54,6 +54,7 @@ XSYS_GRAMMAR = Lark(
 
     %import common.WS
     %ignore WS
+    %ignore /#.*/
     %import common.CNAME
 
     start: stmt* | expr*
