@@ -1,12 +1,13 @@
 from lark import Lark, Transformer
 
-class XSys(Transformer):
+
+# ----------------------------------------------------------------------
+
+
+class XSysTransformer(Transformer):
     pass
 
-class Interpreter():
-    xsys = Lark(
-    r"""
-
+xsys_grammar = Lark(r"""
 %import common.WS
 %ignore WS
 
@@ -16,7 +17,6 @@ stmt_expr: stmt_head -> stmt
 stmt_head: ( expr_head "=>" expr_head ) -> stmt_impl
     | ( "=" atom* ) -> stmt_init
     | ( "?" atom* ) -> stmt_look
-
 
 expr_head: expr_and -> expr
 
@@ -34,18 +34,19 @@ expr_last: atom -> expr
     | ( "!" "(" expr_head ")" ) -> expr_not
     | ( "(" expr_head ")" ) -> expr
 
-
 atom: /[a-zA-Z]+/
 
 """,
     start="stmt_expr",
     parser="lalr",
-    transformer=XSys(),
+    transformer=XSysTransformer(),
 )
-    
+
+
+class Interpreter(): 
     def __init__(self):
         self.context = {}
     
     def interpret(self, text):
-        tree = self.xsys.parse(text)
+        tree = xsys_grammar.parse(text)
         return tree
