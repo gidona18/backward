@@ -2,6 +2,7 @@ from lark import Lark, Transformer
 
 from protoclass import proto
 
+BASE = proto(__repr__=lambda self: f"{self.kind}({self.data})")
 
 class XSys(Transformer):
     def start(self, args):
@@ -15,12 +16,12 @@ class XSys(Transformer):
         (expr,) = expr
         return expr
 
-
     def atom(self, atom):
         atom = str(atom[0])
-        prot = proto(kind='atom', data=atom)
-        prot.__repr__ = lambda self: f"{self.kind}({self.data})"
-        return prot
+        return proto(kind='atom', data=atom).chain(BASE)
+    
+    def make_true(self, args):
+        return proto(kind='make_true', data=args).chain(BASE)
 
 XSYS_GRAMMAR = Lark(r"""
 
@@ -30,8 +31,8 @@ XSYS_GRAMMAR = Lark(r"""
 
     start: stmt* | expr*
 
-    stmt: ( "=" atom* ) -> make_truth
-        | ( "?" atom* ) -> find_truth
+    stmt: ( "=" atom* ) -> make_true
+        | ( "?" atom* ) -> find_true
         | ( expr "=>" expr ) -> make_rule
     
     atom: CNAME
