@@ -1,6 +1,6 @@
 from lark import Lark, Transformer
-
 from protoclass import proto
+
 
 BASE = proto(__repr__=lambda self: f"{self.kind}({self.data})")
 
