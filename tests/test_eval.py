@@ -76,9 +76,10 @@ class TestRead(unittest.TestCase):
         ans = ctx.evaluate("b => c")
         ans = ctx.evaluate("= a")
         ans = ctx.evaluate("a b c")
-        #self.assertEqual(ans, [True,True,True])
+        self.assertEqual(ans, [True,True,True])
         ans = ctx.evaluate("a => d & e & f")
-        self.assertTrue(False)
+        ans = ctx.evaluate("d e f")
+        self.assertEqual(ans, [True,True,True])
 
 if __name__ == "__main__":
     unittest.main()

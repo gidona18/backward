@@ -38,8 +38,14 @@ def make_rule(ctx, args):
 def eval_atom(ctx, atom):
     if atom.data in ctx:
         val = ctx[atom.data]
-        return val.data
-        # XXX: implement chaining
+        if val.seen:
+            return val.data
+        elif val.rule == None:
+            return False
+        else:
+            val.seen = True
+            val.data = eval_node(ctx, val.rule)
+            return val.data
     else:
         return False
 
