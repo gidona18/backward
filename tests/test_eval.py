@@ -58,7 +58,17 @@ class TestRead(unittest.TestCase):
         ans = ctx.evaluate("!a | !c")
         self.assertEqual(ans, [False])
     
-
+    def test_xor(self):
+        ctx = Backward()
+        ans = ctx.evaluate("= a c")
+        ans = ctx.evaluate("a ^ c")
+        self.assertEqual(ans, [False])
+        ans = ctx.evaluate("!a ^ c")
+        self.assertEqual(ans, [True])
+        ans = ctx.evaluate("a ^ !c")
+        self.assertEqual(ans, [True])
+        ans = ctx.evaluate("a ^ b")
+        self.assertEqual(ans, [True])
 
 
 if __name__ == "__main__":
