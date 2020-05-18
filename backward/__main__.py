@@ -16,8 +16,14 @@ def main(file):
             print(f"{type(e)}:", e)
     else:
         while True:
+            txt = ""
             try:
-                ans = ctx.evaluate(input("λ "))
+                txt = input("λ ")
+            except KeyboardInterrupt:
+                print()
+                exit(0)
+            try:
+                ans = ctx.evaluate(txt)
                 if ans != [] and ans != [None]:
                     print(ans)
             except Exception as e:

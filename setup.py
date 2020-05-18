@@ -6,7 +6,7 @@ README = (HERE / "README.rst").read_text()
 
 setup(
     name="backward",
-    version="0.0.1",
+    version="0.0.2",
     packages=find_packages(exclude=["tests"]),
     description="A small programming language that can deduce new information when given a set of rules and facts.",
     long_description=README,
