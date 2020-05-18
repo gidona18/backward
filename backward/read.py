@@ -47,6 +47,7 @@ class XSys(Transformer):
         (lhs, rhs) = args
         return proto(kind='xor', data=(lhs, rhs)).chain(BASE)
 
+
 XSYS_GRAMMAR = Lark(r"""
 
     %import common.WS
