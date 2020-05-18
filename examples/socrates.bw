@@ -1,0 +1,4 @@
+human => mortal
+socrates => human
+= socrates
+mortal  # true

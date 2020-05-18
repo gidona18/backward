@@ -1,0 +1,7 @@
+croaks & eats_flies => frog
+chirps & sings => canary
+frog => green
+canary => yellow
+
+= croaks eats_flies
+green  # true
