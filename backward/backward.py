@@ -8,6 +8,6 @@ class Backward:
     def read(self, text):
         return read(text)
 
-    #def interpret(self, text):
+    # def interpret(self, text):
     #    tree = read(text)
     #    return tree
