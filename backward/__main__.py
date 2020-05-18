@@ -1,32 +1,25 @@
-"""
 import click
 import readline
-
-from .backward import Interpreter
-
+from .backward import Backward
 
 @click.command()
 @click.option("--file", default=None)
 def main(file):
-    interpreter = Interpreter()
+    ctx = Backward()
     if file:
         try:
             with open(file, "r") as f:
-                txt = f.read()
-                ans = interpreter.interpret(txt)
-                print(ans)
+                print(ctx.evaluate(f.read()))
         except Exception as e:
             print(f"{type(e)}:", e)
     else:
         while True:
-            txt = input("λ ")
             try:
-                ans = interpreter.interpret(txt)
-                print(ans)
+                print(ctx.evaluate(input("λ ")))
             except Exception as e:
                 print(f"{type(e)}:", e)
 
 
 if __name__ == "__main__":
     main()
-"""
+
