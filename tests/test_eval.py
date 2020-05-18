@@ -100,7 +100,7 @@ class TestRead(unittest.TestCase):
         ans = ctx.evaluate("A F K P")
         self.assertEqual(ans, [True, True, False, True])
     
-    def test_rule_not(self):
+    def test_rule_not1(self):
         ctx = Backward()
         ctx.evaluate("B & !C => A")
         ctx.evaluate("=")
@@ -115,6 +115,13 @@ class TestRead(unittest.TestCase):
         ctx.evaluate("= B C")
         ans = ctx.evaluate("A")
         self.assertEqual(ans, [False])
+    
+    def test_rule_not2(self):
+        ctx = Backward()
+        ctx.evaluate("!A | A => B")
+        ctx.evaluate("A | !A => C")
+        ans = ctx.evaluate("B C")
+        self.assertEqual(ans, [True, True])
 
 if __name__ == "__main__":
     unittest.main()
