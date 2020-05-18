@@ -25,7 +25,5 @@ def main(file):
                 print(f"{type(e)}:", e)
 
 
-
-
 if __name__ == "__main__":
     main()
