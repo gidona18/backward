@@ -10,6 +10,7 @@ setup(
     packages=find_packages(exclude=["tests"]),
     description="A simple programming language and inference engine powered by backward chaining.",
     long_description=README,
+    long_description_content_type="text/x-rst",
     url="https://github.com/gidona18/backward",
     license="Apache-2.0",
     classifiers=[
