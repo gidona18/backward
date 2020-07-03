@@ -25,7 +25,7 @@ Usage
    >>> ctx.evaluate("a b c")  # are b and c true?
    [True, True, True]
 
-You can also call ``python -m backward`` from your shell to enter an interactive REPL.
+You can also type ``python -m backward`` into your shell to enter an interactive REPL.
 
 Syntax
 ------
