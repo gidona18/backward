@@ -1,7 +1,8 @@
 backward - *A Backward-Chaining Inference Engine*
 =================================================
 
-A small programming language that can deduce new information when given a set of rules and facts.
+A simple programming language and inference engine powered by backward chaining.
+When given rules and facts, it will deduce new information.
 
 |made-with-python| |PyPI-package-version| |PyPI-license| |PyPI-python-versions| |travis-ci| |PyPI-downloads-month|
 

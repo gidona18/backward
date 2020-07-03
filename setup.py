@@ -6,9 +6,9 @@ README = (HERE / "README.rst").read_text()
 
 setup(
     name="backward",
-    version="0.0.2",
+    version="0.0.3",
     packages=find_packages(exclude=["tests"]),
-    description="A small programming language that can deduce new information when given a set of rules and facts.",
+    description="A simple programming language and inference engine powered by backward chaining.",
     long_description=README,
     url="https://github.com/jellowfish/backward",
     license="Apache-2.0",
