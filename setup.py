@@ -10,7 +10,7 @@ setup(
     packages=find_packages(exclude=["tests"]),
     description="A simple programming language and inference engine powered by backward chaining.",
     long_description=README,
-    url="https://github.com/jellowfish/backward",
+    url="https://github.com/gidona18/backward",
     license="Apache-2.0",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
@@ -29,5 +29,5 @@ setup(
     install_requires=["lark-parser", "protoclass"],
     zip_safe=True,
     author="Armando Herrera",
-    author_email="mail@jellowfish.com",
+    author_email="gidona18@estegio.com",
 )
