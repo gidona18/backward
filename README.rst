@@ -58,5 +58,5 @@ Please make sure to update tests as appropriate.
    :target: https://pypi.python.org/pypi/backward/
 .. |PyPI-python-versions| image:: https://img.shields.io/pypi/pyversions/backward.svg
    :target: https://pypi.python.org/pypi/backward/
-.. |travis-ci| image:: https://travis-ci.com/gidona18/backward.svg?branch=master
-   :target: https://travis-ci.com/gidona18/backward
+.. |travis-ci| image:: https://travis-ci.org/gidona18/backward.svg?branch=master
+   :target: https://travis-ci.org/gidona18/backward
