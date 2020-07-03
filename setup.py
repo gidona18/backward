@@ -6,7 +6,7 @@ README = (HERE / "README.rst").read_text()
 
 setup(
     name="backward",
-    version="0.0.3",
+    version="0.0.4",
     packages=find_packages(exclude=["tests"]),
     description="A simple programming language and inference engine powered by backward chaining.",
     long_description=README,
